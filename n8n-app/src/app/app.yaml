@@ -1,1 +1,2 @@
-command: ["npx", "n8n"]
+port: 5678
+command: ["python", "backend/runner.py"]
