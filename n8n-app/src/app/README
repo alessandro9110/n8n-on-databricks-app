@@ -51,6 +51,69 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8000
 
 Configured for Databricks Apps with `app.yaml`. Uses `DATABRICKS_APP_PORT` environment variable automatically.
 
+## n8n Integration
+
+This template now embeds the **n8n Community Edition** side-by-side with FastAPI using a Python `runner.py` that starts both processes.
+
+### Ports
+
+- FastAPI: `8000`
+- n8n: `5678`
+
+### Local Setup
+
+After the standard install steps also install the n8n Node dependency (already added to `package.json`):
+
+```bash
+npm install
+```
+
+Run combined services:
+
+```bash
+python backend/runner.py
+```
+
+Access n8n UI at: [http://localhost:5678](http://localhost:5678)
+Access API at: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### Environment Variables (override for production)
+
+| Variable | Purpose |
+|----------|---------|
+| `N8N_BASIC_AUTH_ACTIVE` | Enable basic auth (default `true`) |
+| `N8N_BASIC_AUTH_USER` | Basic auth username |
+| `N8N_BASIC_AUTH_PASSWORD` | Basic auth password (CHANGE!) |
+| `N8N_ENCRYPTION_KEY` | Data encryption key (auto-generated if absent) |
+| `DB_TYPE` | Database type (`sqlite` default) |
+| `GENERIC_TIMEZONE` | Timezone for executions |
+
+Set them in Databricks App config or workspace-level secrets for security.
+
+### Databricks Runtime
+
+`app.yaml` now runs: `python backend/runner.py` which starts both n8n and FastAPI. Ensure the cluster runtime includes Node.js ≥ 18 (Databricks default runtimes generally do). If not, add a custom init script to install Node.
+
+### Persistence
+
+Default n8n uses SQLite in the working directory. For durable production usage switch to Postgres or MySQL (set `DB_TYPE=postgresdb` plus connection env vars). On ephemeral clusters you risk losing workflow data.
+
+### Scaling / Separation
+
+If you prefer isolating n8n, create a separate Databricks App or job with its own command `npx n8n` and optionally point FastAPI to it via reverse proxy.
+
+### Security Notes
+
+- Always change the default basic auth password.
+- Provide a stable `N8N_ENCRYPTION_KEY` via a secret manager.
+- Consider restricting public access to port 5678 and proxying through FastAPI with auth.
+
+### Updating n8n
+
+Upgrade by editing the version in `package.json` then run `npm install` and redeploy.
+
+
+
 ## API
 
 - `GET /api/hello` - Hello world message

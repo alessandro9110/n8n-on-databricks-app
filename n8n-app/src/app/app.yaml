@@ -1,1 +1,1 @@
-command: ["uvicorn", "backend.main:app"]
+command: ["npx", "n8n"]
