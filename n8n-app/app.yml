@@ -1,1 +1,1 @@
-command: ["node", "src/app/start.js"]
+command: ["bash", "start.sh"]

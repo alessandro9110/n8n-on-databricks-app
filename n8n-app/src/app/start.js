@@ -2,24 +2,37 @@
 // Uses DATABRICKS_APP_PORT if available, otherwise falls back to 5678.
 
 import { spawn } from 'child_process';
+import path from 'path';
+import fs from 'fs';
 
 const port = process.env.DATABRICKS_APP_PORT || process.env.N8N_PORT || '5678';
 const host = process.env.N8N_LISTEN_ADDRESS || '0.0.0.0';
 
-// Optional: set editor URL hints if provided via environment
-// (prefer configuring these in the Databricks App UI for correctness)
+// Resolve local n8n binary (avoid reliance on npx which may be absent in runtime)
+const candidateBins = [
+  process.env.N8N_BIN,
+  path.resolve(process.cwd(), 'node_modules', '.bin', 'n8n'),
+  path.resolve(process.cwd(), 'node_modules', 'n8n', 'bin', 'n8n'),
+].filter(Boolean);
+
+let n8nBin = candidateBins.find(p => fs.existsSync(p));
+if (!n8nBin) {
+  console.error('[startup] n8n binary not found. Ensure `npm install` has been run. Searched:', candidateBins);
+  process.exit(1);
+}
+
 const env = {
   ...process.env,
   N8N_PORT: port,
   N8N_LISTEN_ADDRESS: host,
 };
 
-console.log(`Starting n8n on ${host}:${port}...`);
+console.log(`Starting n8n via ${n8nBin} on ${host}:${port}...`);
 
-const child = spawn('npx', ['n8n', '--host', host, '--port', port], {
+// Invoke through node to avoid shell script exec issues.
+const child = spawn('node', [n8nBin, '--host', host, '--port', port], {
   stdio: 'inherit',
   env,
-  shell: false,
 });
 
 child.on('exit', (code) => {
