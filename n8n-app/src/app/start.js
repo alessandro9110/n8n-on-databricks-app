@@ -29,8 +29,8 @@ const env = {
 
 console.log(`Starting n8n via ${n8nBin} on ${host}:${port}...`);
 
-// Invoke through node to avoid shell script exec issues.
-const child = spawn('node', [n8nBin, '--host', host, '--port', port], {
+// Invoke through node - n8n uses N8N_LISTEN_ADDRESS env var instead of --host
+const child = spawn('node', [n8nBin], {
   stdio: 'inherit',
   env,
 });
