@@ -1,2 +1,1 @@
-port: 5678
-command: ["python", "backend/runner.py"]
+command: ["node", "start.js"]
