@@ -45,7 +45,7 @@ git clone <repository-url> /Workspace/Users/<your-username>/n8n-databricks-app
 ## 📋 Project Structure
 
 ```
-n8n-databricks-app/
+n8n-app/
 ├── app/                    # Main application folder
 │   ├── app.py             # App entry point (if present)
 │   ├── app.yaml           # Databricks App configuration
