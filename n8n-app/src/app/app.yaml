@@ -1,5 +1,1 @@
-command: [
-  "streamlit", 
-  "run",
-  "app.py"
-]
+command: ["uvicorn", "backend.main:app"]
