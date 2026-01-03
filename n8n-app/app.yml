@@ -3,6 +3,10 @@ volumes:
   - from: "/Volumes/main/n8n_app/n8n_data"
     to: "/home/n8n/.n8n"
 environment:
+  - name: N8N_HOST
+    value: "0.0.0.0"
+  - name: N8N_PORT
+    value: "5678"
   - name: N8N_USER_FOLDER
     value: "/home/n8n/.n8n"
   - name: GENERIC_TIMEZONE
