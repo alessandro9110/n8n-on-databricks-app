@@ -1,0 +1,20 @@
+# Risorse Unity Catalog per persistenza n8n
+resources:
+  catalogs:
+    n8n_app:
+      name: n8n_app
+      comment: "Catalog per dati applicazione n8n"
+      
+  schemas:
+    n8n_app_default:
+      catalog_name: ${resources.catalogs.n8n_app.name}
+      name: default
+      comment: "Schema default per volumi n8n"
+      
+  volumes:
+    n8n_data_volume:
+      catalog_name: ${resources.catalogs.n8n_app.name}
+      schema_name: ${resources.schemas.n8n_app_default.name}
+      name: n8n_data
+      volume_type: MANAGED
+      comment: "Volume per persistere credenziali, workflow e configurazioni n8n"
