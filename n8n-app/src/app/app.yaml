@@ -1,6 +1,6 @@
 command: ["npx", "n8n"]
 volumes:
-  - from: "/Volumes/n8n_app/default/n8n_data"
+  - from: "/Volumes/main/n8n_app/n8n_data"
     to: "/home/n8n/.n8n"
 environment:
   - name: N8N_USER_FOLDER
