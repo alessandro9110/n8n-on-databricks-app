@@ -1,4 +1,6 @@
 command: ["npx", "n8n"]
+ports:
+  - port: 5678
 volumes:
   - from: "/Volumes/main/n8n_app/n8n_data"
     to: "/home/n8n/.n8n"
